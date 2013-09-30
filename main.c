@@ -88,8 +88,6 @@ static TIMER_FLAG strobeWaitFlag;
 
 static ADC_CONTROL_ENUM adc;
 
-static PCINT_FLAG pc;
-
 static uint16_t s_strobeWaitMs = 0;
 static uint32_t s_strobeDelayUs = 0;
 static uint8_t s_strobeCount = 0;
@@ -111,7 +109,7 @@ int main(void)
 		
 		do
 		{
-			if (PCINT_TestAndClear(&pc))
+			if (PCINT_TestAndClear(ePCINT0))
 			{
 				TMR16_StopTimer();
 				
