@@ -41,6 +41,10 @@
 #define ADC_DIRECTION_CH LIB_ADC_CH_0
 #define ADC_POSITION_CH LIB_ADC_CH_1
 
+#define DROP_SENSE_PC_VECTOR ePCINT0
+#define DROP_SENSE_PORT PORTB
+#define DROP_SENSE_PIN 3
+
 #define HEARTBEAT_PORT PIND
 #define HEARTBEAT_PIN 0
 
@@ -109,22 +113,25 @@ int main(void)
 		
 		do
 		{
-			if (PCINT_TestAndClear(ePCINT0))
+			if (PCINT_TestAndClear(DROP_SENSE_PC_VECTOR))
 			{
-				TMR16_StopTimer();
-				
-				s_strobeWaitMs = STROBE_PERIOD_MS;
-				s_strobeCount = 0;
-				
-				if (s_strobeDelayUs)
+				if (false == IO_Read(DROP_SENSE_PORT, DROP_SENSE_PIN))
 				{
-					TMR16_StartTimer(s_strobeDelayUs, &strobeOnFlag, TMR_OCCHAN_B);
+					TMR16_StopTimer();
+					
+					s_strobeWaitMs = STROBE_PERIOD_MS;
+					s_strobeCount = 0;
+					
+					if (s_strobeDelayUs)
+					{
+						TMR16_StartTimer(s_strobeDelayUs, &strobeOnFlag, TMR_OCCHAN_B);
+					}
+					else
+					{
+						strobeOnFlag = true;
+					}
+					strobeProcessing = true;
 				}
-				else
-				{
-					strobeOnFlag = true;
-				}
-				strobeProcessing = true;
 			}
 			
 			if (TMR_TestAndClear(&strobeOnFlag))
