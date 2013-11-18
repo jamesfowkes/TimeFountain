@@ -197,7 +197,7 @@ static void setupADC(void)
 static void setupTimer(void)
 {
 	CLK_Init(0);
-	TMR8_Tick_Init();
+	TMR8_Tick_Init(2, 5);
 
 	appTick.reload = APPLICATION_TICK_MS;
 	appTick.active = true;
